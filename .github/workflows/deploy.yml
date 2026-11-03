@@ -22,14 +22,14 @@ jobs:
       - name: Verify EC2 instance
         run: |
           aws ec2 describe-instances \
-            --instance-ids i-04e9c3916ef14b9d \
+            --instance-ids i-04e9c3916efe14b9d \
             --query "Reservations[0].Instances[0].{InstanceId:InstanceId,State:State.Name}" \
             --output table
 
       - name: Deploy on EC2
         run: |
           aws ssm send-command \
-            --instance-ids "i-04e9c3916ef14b9d" \
+            --instance-ids "i-04e9c3916efe14b9d" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy WorkForge from GitHub Actions" \
             --parameters 'commands=[
