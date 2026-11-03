@@ -26,17 +26,14 @@ jobs:
             --query "Reservations[0].Instances[0].{InstanceId:InstanceId,State:State.Name}" \
             --output table
 
-      - name: Deploy on EC2
+      - name: Deploy on EC2 with health check and rollback
         run: |
           aws ssm send-command \
             --instance-ids "i-04e9c3916efe14b9d" \
             --document-name "AWS-RunShellScript" \
-            --comment "Deploy WorkForge from GitHub Actions" \
+            --comment "Deploy WorkForge with health check and rollback" \
             --parameters 'commands=[
-              "cd /home/ubuntu/company-management && git pull origin main",
-              "cd /home/ubuntu/company-management && docker build -t workforge .",
-              "docker rm -f workforge || true",
-              "docker run -d --name workforge --restart unless-stopped --env-file /home/ubuntu/company-management/.env -p 127.0.0.1:3000:3000 workforge"
+              "sudo -u ubuntu /home/ubuntu/deploy-workforge.sh"
             ]' \
             --query "Command.CommandId" \
             --output text
